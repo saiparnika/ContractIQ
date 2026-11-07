@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contractiq"
+version = "0.1.0"
+description = "Multi-agent contract intelligence, analysis, and verification platform"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.6.0",
+    "pdfplumber>=0.11.0",
+    "pypdf>=4.2.0",
+    "python-dateutil>=2.9.0",
+    "typing-extensions>=4.10.0",
+    "streamlit>=1.38.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.1.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[tool.setuptools]
+packages = ["schemas", "memory", "ingestion", "analysis"]
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+pythonpath = ["."]
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"
