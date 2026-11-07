@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HindsightContractMemory",
+  "description": "Standardized schema for Hindsight long-term contract memory retention, recall, and cross-contract correlation.",
+  "$defs": {
+    "SourceEvidence": {
+      "type": "object",
+      "properties": {
+        "verbatim_quote": { "type": "string" },
+        "page_number": { "type": "integer" },
+        "section_reference": { "type": ["string", "null"] },
+        "start_char_offset": { "type": "integer" },
+        "end_char_offset": { "type": "integer" },
+        "confidence_score": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      },
+      "required": ["verbatim_quote", "page_number", "start_char_offset", "end_char_offset", "confidence_score"]
+    },
+    "HindsightPartyEntity": {
+      "type": "object",
+      "properties": {
+        "canonical_name": { "type": "string" },
+        "known_aliases": { "type": "array", "items": { "type": "string" } },
+        "jurisdiction": { "type": ["string", "null"] },
+        "entity_type": { "type": ["string", "null"] },
+        "historical_contract_count": { "type": "integer" }
+      },
+      "required": ["canonical_name"]
+    },
+    "HindsightAgreementRecord": {
+      "type": "object",
+      "properties": {
+        "memory_id": { "type": "string" },
+        "contract_id": { "type": "string" },
+        "document_hash": { "type": "string" },
+        "title": { "type": "string" },
+        "contract_type": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "superseded", "expired", "terminated"] },
+        "parties": { "type": "array", "items": { "type": "string" } },
+        "effective_date": { "type": ["string", "null"] },
+        "expiration_date": { "type": ["string", "null"] },
+        "governing_law": { "type": ["string", "null"] },
+        "parent_contract_id": { "type": ["string", "null"] },
+        "evidence": { "$ref": "#/$defs/SourceEvidence" }
+      },
+      "required": ["memory_id", "contract_id", "document_hash", "title", "contract_type", "status", "parties"]
+    },
+    "HindsightObservation": {
+      "type": "object",
+      "properties": {
+        "observation_id": { "type": "string" },
+        "contract_id": { "type": "string" },
+        "category": { "type": "string" },
+        "clause_reference": { "type": ["string", "null"] },
+        "quote": { "type": "string" },
+        "normalized_summary": { "type": "string" },
+        "is_active": { "type": "boolean" },
+        "superseded_by": { "type": ["string", "null"] },
+        "financial_value": { "type": ["number", "null"] },
+        "provenance": { "$ref": "#/$defs/SourceEvidence" }
+      },
+      "required": ["observation_id", "contract_id", "category", "quote", "normalized_summary", "is_active", "provenance"]
+    },
+    "HindsightGraphEdge": {
+      "type": "object",
+      "properties": {
+        "source_id": { "type": "string" },
+        "target_id": { "type": "string" },
+        "edge_type": { "type": "string", "enum": ["GOVERNED_BY", "SUPERSEDES", "AMENDS", "PARTY_INVOLVED", "PARENT_COMPANY", "RENEWS"] },
+        "effective_date": { "type": ["string", "null"] },
+        "metadata": { "type": "object" }
+      },
+      "required": ["source_id", "target_id", "edge_type"]
+    },
+    "HindsightRecallQuery": {
+      "type": "object",
+      "properties": {
+        "query_text": { "type": "string" },
+        "party_names": { "type": "array", "items": { "type": "string" } },
+        "contract_types": { "type": "array", "items": { "type": "string" } },
+        "categories": { "type": "array", "items": { "type": "string" } },
+        "as_of_date": { "type": ["string", "null"] },
+        "include_superseded": { "type": "boolean" },
+        "search_modes": { "type": "array", "items": { "type": "string" } },
+        "max_results": { "type": "integer" }
+      },
+      "required": ["query_text"]
+    },
+    "CrossContractDelta": {
+      "type": "object",
+      "properties": {
+        "counterparty": { "type": "string" },
+        "base_contract_id": { "type": "string" },
+        "target_contract_id": { "type": "string" },
+        "delta_type": { "type": "string", "enum": ["AMENDMENT_CHANGE", "SOW_MSA_DISCREPANCY", "PRECEDENT_DEVIATION"] },
+        "clause_category": { "type": "string" },
+        "base_clause_text": { "type": ["string", "null"] },
+        "target_clause_text": { "type": "string" },
+        "conflict_detected": { "type": "boolean" },
+        "conflict_explanation": { "type": ["string", "null"] },
+        "precedence_override_found": { "type": "boolean" }
+      },
+      "required": ["counterparty", "base_contract_id", "target_contract_id", "delta_type", "clause_category", "target_clause_text", "conflict_detected"]
+    },
+    "HindsightIngestionPayload": {
+      "type": "object",
+      "properties": {
+        "contract_id": { "type": "string" },
+        "agreement_record": { "$ref": "#/$defs/HindsightAgreementRecord" },
+        "observations": { "type": "array", "items": { "$ref": "#/$defs/HindsightObservation" } },
+        "graph_edges": { "type": "array", "items": { "$ref": "#/$defs/HindsightGraphEdge" } },
+        "allow_unverified_draft": { "type": "boolean" }
+      },
+      "required": ["contract_id", "agreement_record", "observations", "graph_edges"]
+    }
+  }
+}

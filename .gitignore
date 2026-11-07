@@ -1,0 +1,54 @@
+# ──────────────────────────────────────────────
+# ContractIQ .gitignore
+# ──────────────────────────────────────────────
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env/
+
+# Environment secrets
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Distribution / packaging
+*.egg-info/
+*.egg
+dist/
+build/
+sdist/
+
+# Pytest
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Agents & AI tools
+.agents/
+.gemini/
+
+# Logs & temp files
+*.log
+logs/
+tmp/
+temp/
+

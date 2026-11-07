@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContractVerificationReport",
+  "type": "object",
+  "properties": {
+    "contract_id": { "type": "string" },
+    "document_hash": { "type": "string" },
+    "total_findings_audited": { "type": "integer", "minimum": 0 },
+    "verified_count": { "type": "integer", "minimum": 0 },
+    "contradicted_count": { "type": "integer", "minimum": 0 },
+    "unsupported_count": { "type": "integer", "minimum": 0 },
+    "ambiguous_count": { "type": "integer", "minimum": 0 },
+    "findings_audit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "finding_id": { "type": "string" },
+          "category": { "type": "string" },
+          "original_claim": { "type": "string" },
+          "submitted_evidence": { "$ref": "contract_schema.json#/$defs/SourceEvidence" },
+          "status": {
+            "type": "string",
+            "enum": ["VERIFIED", "CONTRADICTED", "UNSUPPORTED", "AMBIGUOUS", "UNVERIFIED_CITATION"]
+          },
+          "buffer_match_exact": { "type": "boolean" },
+          "normalized_token_match_score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "surrounding_context_consistent": { "type": "boolean" },
+          "discrepancy_explanation": { "type": ["string", "null"] },
+          "severity": { "type": ["string", "null"], "enum": ["CRITICAL", "WARNING", "INFO", null] },
+          "suggested_correction": { "type": ["string", "null"] }
+        },
+        "required": [
+          "finding_id",
+          "category",
+          "original_claim",
+          "submitted_evidence",
+          "status",
+          "buffer_match_exact",
+          "normalized_token_match_score",
+          "surrounding_context_consistent"
+        ]
+      }
+    },
+    "critical_discrepancies": { "type": "array" },
+    "unresolved_questions_for_human": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "human_review_required": { "type": "boolean" }
+  },
+  "required": [
+    "contract_id",
+    "document_hash",
+    "total_findings_audited",
+    "verified_count",
+    "contradicted_count",
+    "unsupported_count",
+    "ambiguous_count",
+    "findings_audit",
+    "human_review_required"
+  ]
+}

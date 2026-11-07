@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExtractedContract",
+  "description": "Standardized schema for contract extraction with source evidence grounding.",
+  "type": "object",
+  "properties": {
+    "document_id": { "type": "string" },
+    "raw_document_length_chars": { "type": "integer" },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "contract_type": { "type": "string" },
+        "effective_date": { "type": ["string", "null"] },
+        "execution_date": { "type": ["string", "null"] },
+        "expiration_date": { "type": ["string", "null"] },
+        "governing_law": { "type": ["string", "null"] },
+        "jurisdiction_venue": { "type": ["string", "null"] },
+        "evidence": { "$ref": "#/$defs/SourceEvidence" }
+      },
+      "required": ["title", "contract_type", "evidence"]
+    },
+    "parties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "entity_type": { "type": ["string", "null"] },
+          "jurisdiction": { "type": ["string", "null"] },
+          "signatory_name": { "type": ["string", "null"] },
+          "signatory_title": { "type": ["string", "null"] },
+          "evidence": { "$ref": "#/$defs/SourceEvidence" }
+        },
+        "required": ["name", "role", "evidence"]
+      }
+    },
+    "commercial_terms": {
+      "type": "object",
+      "properties": {
+        "total_value": { "type": ["number", "null"] },
+        "currency": { "type": ["string", "null"] },
+        "payment_terms": { "type": ["string", "null"] },
+        "billing_frequency": { "type": ["string", "null"] },
+        "late_payment_penalty": { "type": ["string", "null"] },
+        "price_escalation": { "type": ["string", "null"] },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SourceEvidence" }
+        }
+      }
+    },
+    "obligations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "obligation_id": { "type": "string" },
+          "obligor": { "type": "string" },
+          "category": { "type": "string" },
+          "description": { "type": "string" },
+          "deadline_or_frequency": { "type": ["string", "null"] },
+          "evidence": { "$ref": "#/$defs/SourceEvidence" }
+        },
+        "required": ["obligation_id", "obligor", "category", "description", "evidence"]
+      }
+    },
+    "risk_and_liability": {
+      "type": "object",
+      "properties": {
+        "liability_cap_type": { "type": ["string", "null"] },
+        "liability_cap_amount": { "type": ["string", "null"] },
+        "carve_outs": { "type": "array", "items": { "type": "string" } },
+        "indemnification_scope": { "type": ["string", "null"] },
+        "warranties": { "type": "array", "items": { "type": "string" } },
+        "disclaimers": { "type": "array", "items": { "type": "string" } },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SourceEvidence" }
+        }
+      }
+    },
+    "termination_and_renewal": {
+      "type": "object",
+      "properties": {
+        "term_length": { "type": ["string", "null"] },
+        "auto_renewal": { "type": "boolean" },
+        "renewal_notice_window_days": { "type": ["integer", "null"] },
+        "termination_for_convenience": { "type": "boolean" },
+        "notice_for_convenience_days": { "type": ["integer", "null"] },
+        "termination_for_cause_cure_days": { "type": ["integer", "null"] },
+        "post_termination_obligations": { "type": "array", "items": { "type": "string" } },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SourceEvidence" }
+        }
+      }
+    }
+  },
+  "required": ["document_id", "metadata", "parties", "commercial_terms", "obligations", "risk_and_liability", "termination_and_renewal"],
+  "$defs": {
+    "SourceEvidence": {
+      "type": "object",
+      "properties": {
+        "verbatim_quote": { "type": "string" },
+        "page_number": { "type": "integer" },
+        "section_reference": { "type": ["string", "null"] },
+        "start_char_offset": { "type": "integer" },
+        "end_char_offset": { "type": "integer" },
+        "bounding_box": {
+          "type": ["object", "null"],
+          "properties": {
+            "x0": { "type": "number" },
+            "y0": { "type": "number" },
+            "x1": { "type": "number" },
+            "y1": { "type": "number" }
+          }
+        },
+        "confidence_score": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      },
+      "required": ["verbatim_quote", "page_number", "start_char_offset", "end_char_offset", "confidence_score"]
+    }
+  }
+}
